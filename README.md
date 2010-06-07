@@ -36,6 +36,9 @@ The game is included in a web page by creating an block element (normally a <tt>
     </div>
     <script type="text/javascript" src="life.js"></script>
 
+For a working example, see
+<a href="http://robhague.github.com/CanvasLife/">here</a>.
+
 ## Licence
 
 This software is provided under the MIT licence:

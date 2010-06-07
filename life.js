@@ -27,7 +27,7 @@
 
 // Start with a declaration of the global variables provided by the
 // browser, to make JSLint happy.
-/*global document, clearInterval, setInterval*/ 
+/*global document, clearInterval, setInterval, console*/ 
 
 var life = function() {
     // The function constructs the game board and controls inside an
@@ -108,8 +108,7 @@ var life = function() {
 
                 var oldVal = getState(x,y);
                 var newVal =
-                    (neighbours === 3) ||
-                    (oldVal && neighbours === 2);
+                    ((neighbours === 3) || (oldVal && neighbours === 2))? 1 : 0;
                 newState[x+y*width] = newVal;
                 stable = stable && (oldVal === newVal);
             }
@@ -149,7 +148,7 @@ var life = function() {
         for(var yy = 0; yy < shape.length; yy++) {
             row = shape[yy];
             for(var xx = 0; xx < row.length; xx++) {
-                setState(x+xx+xoffset, y+yy+yoffset, row[xx] === '*');
+                setState(x+xx+xoffset, y+yy+yoffset, row[xx] === '*'? 1 : 0);
             }
         }
     }
@@ -162,7 +161,8 @@ var life = function() {
         'Glider NE': ["***", "  *", " * "],
         'Glider NW': ["***", "*  ", " * "],
         'Glider SE': [" * ", "  *", "***"],
-        'Glider SW': [" * ", "*  ", "***"]
+        'Glider SW': [" * ", "*  ", "***"],
+        'R-pentomino': [" **", "** ", " * "]
     };
     var selector = document.createElement('select');
     for(var name in shapes) {
@@ -211,17 +211,14 @@ var life = function() {
     function save() {
         stop();
         var serial = '', current = 0, rl = 0;
-        for(var i = 0; i < state.length; i++) {
+        for(var i = 0; i < state.length; i++, rl++) {
             if (current !== state[i]) {
                 serial = serial + encodeRunlength(rl);
-                rl = 1;
-                current = !current;
-            } else if (rl === 4095) {
-                serial = serial + encodeRunlength(rl);
                 rl = 0;
-                current = !current;
-            } else {
-                rl++;
+                current = current? 0 : 1;
+            } else if (rl === 4095) {
+                serial = serial + encodeRunlength(rl) + encodeRunlength(0);
+                rl = 0;
             }
         }
         serial = serial + encodeRunlength(rl);
@@ -243,7 +240,7 @@ var life = function() {
             }
             target = i + rl;
             while(i < target) { state[i++] = current; }
-            current = !current;
+            current = current? 0 : 1;
         }
         render();
     }
@@ -268,7 +265,7 @@ var life = function() {
 
     // Initialse the state, and add some interest
     clear();
-    addShape(2, 2, shapes['Glider SE']);
+    addShape(width/2, height/2, shapes['R-pentomino']);
     render();
 
     return container;

@@ -26,23 +26,15 @@ game board, and places the resulting string in the text box next
 to it. A previous state may be restored by pasting a generated
 string into the text box and clicking the Restore button.
 
-## Example
+## Usage
 
 The game is included in a web page by creating an block element (normally a <tt>&lt;div&gt;</tt>) with the ID 'life', and then invoking the script, like so:
 
-    &lt;div id="life"&gt;
+    <div id="life">
       You need JavaScript (and a modern, canvas-supporting browser) to
       enjoy the Lifey goodness.
-    &lt;/div&gt;
-    &lt;script type="text/javascript" src="life.js"&gt;&lt;/script&gt;
-    
- This produces the following:
-
- <div id="life">
-    You need JavaScript (and a modern, canvas-supporting browser) to
-    enjoy the Lifey goodness.
- </div>
- <script type="text/javascript" src="life.js"></script>
+    </div>
+    <script type="text/javascript" src="life.js"></script>
 
 ## Licence
 

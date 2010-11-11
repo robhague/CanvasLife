@@ -43,7 +43,7 @@ var life = function() {
         buffer.width = 320;
         buffer.height = 320;
         buffer.display = 'none';
-        buffer.border = 'border: solid 1px #999; display:none;';
+        buffer.style.border = 'solid 2px #000';
         container.appendChild(buffer);
         return buffer;
     }
@@ -66,6 +66,7 @@ var life = function() {
     }
 
     // Rendering
+    var editPoint;
     function render() {
         var currentBuffer = buffers[bufferIdx];
         var C = currentBuffer.getContext('2d');
@@ -82,6 +83,12 @@ var life = function() {
                     }
                     C.strokeRect(x*cellSize, y*cellSize, cellSize, cellSize);
                 }
+            }
+
+            if (editPoint) {
+                C.strokeStyle = "#ff0000";
+                C.strokeRect(editPoint.x*cellSize, editPoint.y*cellSize,
+                             cellSize, cellSize);
             }
 
             // Swap and display
@@ -253,15 +260,35 @@ var life = function() {
     addButton("Restore", restore);
 
     // Editing
-    function canvasClicked(evt) {
-        stop();
-        var bounds = buffers[1-bufferIdx].getBoundingClientRect();
-        var x = (evt.clientX - bounds.left)/cellSize - 0.5;
-        var y = (evt.clientY - bounds.top)/cellSize - 0.5;
-        addShape(x, y, shapes[currentShape]);
-        render();
+    function setEvents(buffer) {
+        buffer.onmouseup = function(evt) {
+            stop();
+            var bounds = buffers[1-bufferIdx].getBoundingClientRect();
+            var x = (evt.clientX - bounds.left)/cellSize - 0.5;
+            var y = (evt.clientY - bounds.top)/cellSize - 0.5;
+            addShape(x, y, shapes[currentShape]);
+            render();
+        }
+
+        buffer.onmousein = buffer.onmousemove = function(evt) {
+            var bounds = buffers[1-bufferIdx].getBoundingClientRect();
+            editPoint = {
+                x: Math.floor((evt.clientX - bounds.left)/cellSize - 0.5),
+                y: Math.floor((evt.clientY - bounds.top)/cellSize - 0.5)
+            }
+            render();
+        }
+
+        buffer.onmouseout = function(evt) {
+            if (editPoint) {
+                editPoint = undefined;
+                render();
+            }
+        }
     }
-    buffers[0].onclick = buffers[1-bufferIdx].onclick = canvasClicked;
+
+    setEvents(buffers[0]);
+    setEvents(buffers[1]);
 
     // Initialse the state, and add some interest
     clear();

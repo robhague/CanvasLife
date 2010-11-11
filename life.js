@@ -127,6 +127,9 @@ var life = function() {
     function start() {
         clearInterval(interval); interval = setInterval(step, 100);
     }
+    function start_quick() {
+        clearInterval(interval); interval = setInterval(step, 0);
+    }
     function clear() {
         stop();
         state = new Array(width * height);
@@ -143,6 +146,7 @@ var life = function() {
         container.appendChild(button);
     }
     addButton('Start', start);
+    addButton('Quick', start_quick);
     addButton('Stop', stop);
     addButton('Step', step);
     addButton('Clear', clear);
